@@ -1,0 +1,26 @@
+#navs {
+	padding-top: 60px;
+	text-align: right;
+}
+
+#ctotal {
+	text-align: right;
+}
+#book {
+	text-align: center;
+}
+#carttable a {
+	color: black;
+}
+.form-signin input {
+	width: 300px;
+	height: 30px;
+}
+footer {
+	display: block;
+	height: 100px;
+}
+
+hr {
+	border: 1px solid black;
+}
