@@ -3,11 +3,13 @@ package model;
 public class user {
 	private int userId;
 	private String userName;
+	private boolean isAdmin;
 	
 
 	public user(int uid, String usrnm) {
 		this.userId = uid;
 		this.setUsername(usrnm);
+		this.setAdmin(false);
 	}
 
 	public user() {
@@ -29,6 +31,14 @@ public class user {
 
 	public void setUserId(int userId) {
 		this.userId = userId;
+	}
+
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
 	}
 	
 }
