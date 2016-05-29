@@ -33,6 +33,9 @@
 					<p>
 						Welcome <b>${user.userName}</b>
 					</p>
+					<c:if test="${user.isAdmin()}">
+					<a href="admin">Admin</a><br>
+					</c:if>
 					<a href="order">Track Order</a><br>
 					<a href="logout">Logout</a>
 				</c:if>

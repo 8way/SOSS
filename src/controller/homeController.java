@@ -1,7 +1,10 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -20,8 +23,11 @@ import dao.orderDaoDB;
 import dao.productDaoDB;
 import model.cart;
 import model.cartItem;
+import model.order;
+import model.orderdetail;
 import model.product;
 import model.user;
+import model.warehouse;
 
 @Controller
 @RequestMapping("/")
@@ -49,7 +55,86 @@ public class homeController {
 		}
 		return "redirect:/";
 	}
+	// Admin
+	@RequestMapping(value = "/admin", method = RequestMethod.GET)
+	public String showAdminPage(Model model) {
+		List<order> orders = odao.getAllOrders();
+		model.addAttribute("orders", orders);
+		List<warehouse> warehouses = odao.getAllwarehouse();
+		model.addAttribute("warehouses", warehouses);
+		return "admin";
+	}
+	@RequestMapping(value = "/get/{orderid}", method = RequestMethod.GET)
+	public String showOrderdetailPage(@PathVariable int orderid, Model model, @ModelAttribute("order") order order) {
+		List<orderdetail> orders = odao.getOrderDetailsById(orderid);
+		model.addAttribute("orders", orders);
+		List<warehouse> warehouses = odao.getAllwarehouse();
+		model.addAttribute("warehouses", warehouses);
+		System.out.println(onePackage(orders, warehouses));
+		if (onePackage(orders, warehouses) != null)
+		{
+			model.addAttribute("package", warehouses);
+		}
+		return "orderdetails";
+	}
+	public String onePackage(List<orderdetail> orders, List<warehouse> warehouses)
+	{
+		Map<String, Map<Integer, Integer>> inve_dic = warehouse2map(warehouses);
+//		for (String loc:inve_dic.keySet())
+//		{
+//			inve_dic.get(loc)
+//		}
+		Map<Integer, Integer> orders_dic = new HashMap<Integer, Integer>();
+		for (orderdetail x: orders)
+		{
+			orders_dic.put(x.getProductid(), x.getQty());
+		}
+		System.out.println(orders_dic.toString());
+		System.out.println(inve_dic.toString());
+		System.out.println(inve_dic.get("Sydney").get(1));
+		for (Entry<String, Map<Integer, Integer>> x:inve_dic.entrySet())
+		{
+			for ( Entry<Integer, Integer> y : orders_dic.entrySet())
+			{
+				if (x.getValue().containsKey(y.getKey()))
+				{
+					if (y.getValue()>x.getValue().get(y.getKey()))
+					{
+						return null;
+					}
+				}
+				else
+				{
+					break;
+				}
+				
+			}
+			return x.getKey();
+			
+		}
+		
+		return null;
+	}
 
+	private Map<String, Map<Integer, Integer>> warehouse2map(List<warehouse> warehouses) {
+		Map<String, Map<Integer, Integer>> inve_dic = new HashMap<String, Map<Integer, Integer>>();
+		Map<Integer, Integer> tmp = new HashMap<Integer, Integer>();
+		for (warehouse x: warehouses)
+		{
+			if (inve_dic.containsKey(x.getLocation()))
+			{
+				inve_dic.get(x.getLocation()).put(x.getProduct_id(), x.getQty());
+			}
+			else
+			{
+				tmp.put(x.getProduct_id(), x.getQty());
+				inve_dic.put(x.getLocation(), tmp);
+				tmp = new HashMap<Integer, Integer>();
+			}
+			
+		}
+		return inve_dic;
+	}
 	// Login Page
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String showLoginForm(Model model) {
@@ -93,13 +178,13 @@ public class homeController {
 		}
 		return "broken";
 	}
-	
+
 	// Cart Pages
 	@ModelAttribute("cart")
 	public cart createCart() {
 		return new cart();
 	}
-
+	
 	@RequestMapping(value="carts", method = RequestMethod.GET)
 	public String show(Model model, @ModelAttribute(value = "cart") cart cart) {
 		List<product> products = pdao.getAllProducts();

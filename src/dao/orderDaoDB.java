@@ -9,6 +9,10 @@ import java.util.List;
 
 import model.cart;
 import model.cartItem;
+import model.order;
+import model.orderdetail;
+import model.product;
+import model.warehouse;
 
 public class orderDaoDB {
 	private String dbPath = "jdbc:sqlite:" + this.getClass().getResource("/").getPath() + "soss.db";
@@ -73,5 +77,161 @@ public class orderDaoDB {
 			System.exit(0);
 		}
 		return false;
+	}
+	public List<warehouse> getAllwarehouse()
+	{
+		Connection c = null;
+		Statement stmt = null;
+		List<warehouse> listOfwarehouses = new ArrayList<warehouse>();
+
+		try {
+			// Open DB
+			Class.forName("org.sqlite.JDBC");
+
+			c = DriverManager.getConnection(dbPath);
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+
+			// Run query and get results
+			ResultSet rs = stmt.executeQuery("select stock_id, product_id, name, location, qty from warehouse join product on (warehouse.product_id = product.productid);");
+
+			// Save results into list of products
+			while (rs.next()) {
+				int x = rs.getInt(1);
+				int y = rs.getInt(2);
+				String z = rs.getString(3);
+				String foo = rs.getString(4);
+				int bar = rs.getInt(5);
+
+				warehouse temp = new warehouse(x, y, z, foo, bar);
+				listOfwarehouses.add(temp);
+			}
+
+			// Close connection
+			rs.close();
+			stmt.close();
+			c.close();
+
+		} catch (Exception e) {
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		return listOfwarehouses;
+	}
+	public List<order> getAllOrders() {
+		Connection c = null;
+		Statement stmt = null;
+		List<order> listOfOrders = new ArrayList<order>();
+
+		try {
+			// Open DB
+			Class.forName("org.sqlite.JDBC");
+
+			c = DriverManager.getConnection(dbPath);
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+
+			// Run query and get results
+			ResultSet rs = stmt.executeQuery("SELECT * FROM orders;");
+
+			// Save results into list of products
+			while (rs.next()) {
+				int x = rs.getInt(1);
+				int y = rs.getInt(2);
+				String z = rs.getString(3);
+				int foo = rs.getInt(4);
+
+				order temp = new order(x, y, z, foo);
+				listOfOrders.add(temp);
+			}
+
+			// Close connection
+			rs.close();
+			stmt.close();
+			c.close();
+
+		} catch (Exception e) {
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		return listOfOrders;
+	}
+	
+	public order getOrderById(int orderId) {
+		Connection c = null;
+		Statement stmt = null;
+		order temp = null;
+
+		try {
+			// Open DB
+			Class.forName("org.sqlite.JDBC");
+
+			c = DriverManager.getConnection(dbPath);
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+		
+			// Run query and get results
+			ResultSet rs = stmt.executeQuery("SELECT * FROM orders WHERE orderid =" + orderId + ";");
+
+			// Save results into list of products
+			if (rs.next()) {
+				int x = rs.getInt(1);
+				int y = rs.getInt(2);
+				String z = rs.getString(3);
+				int foo = rs.getInt(4);
+
+
+				temp = new order(x, y, z, foo);
+			}
+
+			// Close connection
+			rs.close();
+			stmt.close();
+			c.close();
+
+		} catch (Exception e) {
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		return temp;
+	}
+	public List<orderdetail> getOrderDetailsById(int orderId) {
+		Connection c = null;
+		Statement stmt = null;
+		List<orderdetail> listOfOrders = new ArrayList<orderdetail>();
+
+		try {
+			// Open DB
+			Class.forName("org.sqlite.JDBC");
+
+			c = DriverManager.getConnection(dbPath);
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+
+			// Run query and get results
+			ResultSet rs = stmt.executeQuery("select orderitemid, orderid, orderitems.productid, qty, name from orderitems join product on (orderitems.productid = product.productid) where orderid =" + orderId +";");
+
+			// Save results into list of products
+			while (rs.next()) {
+				int orderitem_id=rs.getInt(1);
+				int order_id=rs.getInt(2);
+				int productid=rs.getInt(3);
+				int qty=rs.getInt(4);
+				String names= rs.getString(5);
+
+				orderdetail temp = new orderdetail(orderitem_id, order_id, productid, qty, names);
+				listOfOrders.add(temp);
+			}
+
+			// Close connection
+			rs.close();
+			stmt.close();
+			c.close();
+
+		} catch (Exception e) {
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		return listOfOrders;
 	}
 }
