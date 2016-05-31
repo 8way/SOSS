@@ -26,27 +26,11 @@
 	<nav class="container">
 		<div class="col-md-6">
 			<h1>COMP5347 Assignment 2 ADMIN CENTER</h1>
-			<h2>Pending Order</h2>
+			<h2>My Order</h2>
 		</div>
 		<div class="col-md-6" id="navs">
 			<p>
-
-				<c:if test="${not empty user}">
-					<p>
-						Welcome <b>${user.userName}</b>
-					</p>
-					<c:if test="${user.isAdmin()}">
-					<a href="admin">Admin</a><br>
-					</c:if>			
-					<a href="order">Track Order</a><br>
-					<p>	<a href="/SOSS/">Home</a><br>
-					<a href="logout">Logout</a>
-				</c:if>
-				<c:if test="${empty user}">
-					<a href="login">Log In</a>
-					<p>	<a href="/SOSS/">Home</a>
-				</c:if>
-				
+				<a href="/SOSS/">Home</a>
 			</p>
 		</div>
 		<div class="col-md-12">
@@ -59,49 +43,26 @@
      <table class= "table" data-toggle="table" data-height="299">
     <thead>
         <tr>
-            <th>Order ID</th>
-            <th>User ID</th>
-            <th>Delivery address</th>
-            <th>Status</th>
-            <th>Process</th>
-        </tr>
-    </thead>
-     <tbody>
-         <c:forEach var="order" items="${orders}">
-         <tr>
-         <td>${order.order_id}</td>
-        <td>${order.user_id}</td>
-        <td>${order.delaaddress}</td>
-        <td>${order.status}</td>
-        <td><a href="admin/get/${order.order_id}">more information</a></td></tr>
-    	</c:forEach>
-    	
-   	</tbody>
-</table>
-<table class= "table" data-toggle="table" data-height="299">
-    <thead>
-        <tr>
-            <th>Stock ID</th>
-            <th>Product ID</th>
-            <th>Product Name</th>
-            <th>Location</th>
- 			<th>Qty</th>
+            <th>order_id</th>
+            <th>user_id</th>
+            <th>delaaddress</th>
+            <th>status</th>
+
         </tr>
     </thead>
     <tbody>
-          <c:forEach var="warehouse" items="${warehouses}">
+          <c:forEach var="order" items="${orders}">
           <tr>
-    <td>${warehouse.stock_id}</td>
-        <td>${warehouse.product_id}</td>
-        <td>${warehouse.product_name}</td>
-        <td>${warehouse.location}</td>
- 		<td>${warehouse.qty}</td>
+    <td>${order.order_id}</td>
+        <td>${order.user_id}</td>
+        <td>${order.delaaddress}</td>
+        <td>${order.status}</td>
+
     		</c:forEach>
    	</tbody>
 </table>
         </div>
     </div>
-</div>
 	</section>
 </body>
 <!-- BS JavaScript -->

@@ -33,8 +33,8 @@ public class orderDaoDB {
 			List<cartItem> orderProducts = new ArrayList<cartItem>(cart.getItems());
 			
 			// Make order
-			String sql = "INSERT INTO orders (userid, deladdress, status, tracknumber) "
-					+ "VALUES ("+uid+",\""+deladdy+"\",1,1);";
+			String sql = "INSERT INTO orders (userid, deladdress, status) "
+					+ "VALUES ("+uid+",\""+deladdy+"\",1);";
 			stmt.executeUpdate(sql);
 			
 			// Get orderid
@@ -94,6 +94,46 @@ public class orderDaoDB {
 
 			// Run query and get results
 			ResultSet rs = stmt.executeQuery("select stock_id, product_id, name, location, qty from warehouse join product on (warehouse.product_id = product.productid);");
+
+			// Save results into list of products
+			while (rs.next()) {
+				int x = rs.getInt(1);
+				int y = rs.getInt(2);
+				String z = rs.getString(3);
+				String foo = rs.getString(4);
+				int bar = rs.getInt(5);
+
+				warehouse temp = new warehouse(x, y, z, foo, bar);
+				listOfwarehouses.add(temp);
+			}
+
+			// Close connection
+			rs.close();
+			stmt.close();
+			c.close();
+
+		} catch (Exception e) {
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		return listOfwarehouses;
+	}
+	public List<warehouse> getWarehouse(String name)
+	{
+		Connection c = null;
+		Statement stmt = null;
+		List<warehouse> listOfwarehouses = new ArrayList<warehouse>();
+
+		try {
+			// Open DB
+			Class.forName("org.sqlite.JDBC");
+
+			c = DriverManager.getConnection(dbPath);
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+
+			// Run query and get results
+			ResultSet rs = stmt.executeQuery("select stock_id, product_id, name, location, qty from warehouse join product on (warehouse.product_id = product.productid) where location="+name+";");
 
 			// Save results into list of products
 			while (rs.next()) {
@@ -194,6 +234,43 @@ public class orderDaoDB {
 			System.exit(0);
 		}
 		return temp;
+	}
+	public List<order> getOrderByuid(int user_id) {
+		Connection c = null;
+		Statement stmt = null;
+		List<order> listOfOrders = new ArrayList<order>();
+		try {
+			// Open DB
+			Class.forName("org.sqlite.JDBC");
+
+			c = DriverManager.getConnection(dbPath);
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+		
+			// Run query and get results
+			ResultSet rs = stmt.executeQuery("SELECT * FROM orders WHERE userid =" + user_id + ";");
+
+			// Save results into list of products
+			while (rs.next()) {
+				int x = rs.getInt(1);
+				int y = rs.getInt(2);
+				String z = rs.getString(3);
+				int foo = rs.getInt(4);
+
+				order temp = new order(x, y, z, foo);
+				listOfOrders.add(temp);
+			}
+
+			// Close connection
+			rs.close();
+			stmt.close();
+			c.close();
+
+		} catch (Exception e) {
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		return listOfOrders;
 	}
 	public List<orderdetail> getOrderDetailsById(int orderId) {
 		Connection c = null;

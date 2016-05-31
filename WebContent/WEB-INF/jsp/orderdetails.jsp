@@ -82,12 +82,37 @@
     		</c:forEach>
    	</tbody>
 </table>
-<c:if test="${not empty }">
-<p>
-						Welcome
-					</p>
-</c:if>
         </div>
+            		
+    		<form method="post" class="form-horizontal">
+<fieldset>
+
+<!-- Form Name -->
+<legend>Post to shipping system</legend>
+
+<!-- Select Multiple -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="select">Location</label>
+  <div class="col-md-4">
+    <select id="select" name="select" class="form-control">
+    <c:forEach var="list" items="${string}">
+     <option value="${list}">${list}</option>
+    		</c:forEach>
+    </select>
+  </div>
+</div>
+
+<!-- Button (Double) -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="button1id">Process</label>
+  <div class="col-md-8">
+    <button id="button1id" name="button1id" class="btn btn-success" type="submit" >Deliver All</button>
+    <button id="button2id" name="button2id" class="btn btn-danger" type="submit" >Partial Deliver</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
     </div>
 	</section>
 </body>

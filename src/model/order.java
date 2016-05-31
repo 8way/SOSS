@@ -38,4 +38,12 @@ public class order {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+	public boolean pending()
+	{
+		if (this.status==1)
+		{
+			return true;
+		}
+		return false;
+	}
 }
